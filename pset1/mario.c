@@ -1,5 +1,4 @@
 #include <cs50.h>
-#include <string.h>
 #include <stdio.h>
 
 void build_pyramid(int height);
