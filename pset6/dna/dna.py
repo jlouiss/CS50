@@ -3,6 +3,8 @@ Usage: python dna.py <dna_database>.csv <dna_sequence>.txt
 
 Given a database and a sequence, match the DNA sequence against the database.
 """
+
+
 from sys import argv, exit
 import csv
 import re
@@ -11,11 +13,14 @@ import re
 dna_sequence = ""
 dna_database = []
 str_list = []
-dna_sequence_str_count = {} # a dictionary of {STR: number_of_repetitions}
+dna_sequence_str_count = {}  # a dictionary of {STR: number_of_repetitions}
+
 
 """
 Load the csv file in memory and extract the STRs from the csv header
 """
+
+
 def parse_database():
     global str_list
 
@@ -39,7 +44,7 @@ def parse_dna_sequence():
             dna_sequence_str_count[str] = 0
             continue
 
-        largest_match = max(matches, key = len)
+        largest_match = max(matches, key=len)
         dna_sequence_str_count[str] = largest_match.count(str)
 
 
@@ -70,5 +75,6 @@ def main():
 
     print(match)
     exit(0)
+
 
 main()

@@ -8,8 +8,11 @@ where
 L is the average number of letters per 100 words in the text, and
 S is the average number of sentences per 100 words in the text
 """
+
+
 def coleman_liau_index(l, s):
     return 0.0588 * l - 0.296 * s - 15.8
+
 
 def main():
     string = input("Text: ")

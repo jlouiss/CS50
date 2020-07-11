@@ -5,7 +5,7 @@ def get_card_type(card_number):
     card_type = "INVALID"
 
     if ((card_number >= 340000000000000 and card_number < 350000000000000)
-        or (card_number >= 370000000000000 and card_number < 380000000000000)):
+            or (card_number >= 370000000000000 and card_number < 380000000000000)):
         card_type = "AMEX"
     elif ((card_number >= 4000000000000000 and card_number < 5000000000000000)
           or (card_number >= 4000000000000 and card_number < 5000000000000)):

@@ -6,6 +6,8 @@ import subprocess
 """
 Usage: python test_dna.py <path_to_csv>.csv
 """
+
+
 def main():
     if len(argv) != 2:
         print("Usage: python test_dna.py <path_to_csv>.csv")
@@ -24,8 +26,8 @@ def main():
             # https://stackoverflow.com/questions/6086047/get-output-of-python-script-from-within-python-script
             process = subprocess.Popen(
                 ['python3', 'dna.py', database, sequence],
-                stdout = subprocess.PIPE,
-                stderr = subprocess.STDOUT)
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT)
             result = process.communicate()[0]
 
             # print(f"result: {result.decode().rstrip()}")
