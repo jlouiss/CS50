@@ -1,0 +1,35 @@
+:root {
+    --footer-height: 4rem;
+    --monospaced: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --off-white: #e9ecef;
+}
+
+html {
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    margin-bottom: var(--footer-height);
+}
+
+.footer {
+    background: var(--off-white);
+    bottom: 0;
+    height: var(--footer-height);
+    line-height: var(--footer-height);
+    position: absolute;
+    width: 100%;
+}
+
+.text-mono {
+    font-family: var(--monospaced);
+}
+
+.navbar-brand {
+    display: flex;
+}
+
+.navbar-brand img {
+    max-height: 32px;
+}
