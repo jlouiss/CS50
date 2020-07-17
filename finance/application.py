@@ -7,7 +7,7 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required, lookup, usd
+from helpers import apology, debug, login_required, lookup, usd
 
 # Configure application
 app = Flask(__name__)
@@ -118,8 +118,29 @@ def quote():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """Register user"""
-    return apology("TODO")
+    if request.method == "GET":
+        return render_template("register.html")
+
+    # (basic) password validation is handled through HTML
+    password = request.form.get("password")
+    password_confirmation = request.form.get("password-confirmation")
+
+    if password != password_confirmation:
+        return apology("The passwords don't match", 400)
+
+    username = request.form.get("username")
+
+    # check doesn't exist in DB
+    rows = db.execute("SELECT * FROM users WHERE username = :username",
+                      username=username)
+    if len(rows) != 0:
+        return apology("invalid username", 403)
+
+    result = db.execute("INSERT INTO users (username, hash) VALUES (:username, :password)", username=username, password=generate_password_hash(password))
+    if not result:
+        return apology("something went wrong, try again", 500)
+
+    return redirect("/login")
 
 
 @app.route("/sell", methods=["GET", "POST"])

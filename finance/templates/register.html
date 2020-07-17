@@ -1,4 +1,49 @@
 {% extends 'layout.html' %}
 
-{% block body %}
+{% block main %}
+
+<div class="row">
+    <div class="col-sm"></div>
+
+    <div class="col-sm">
+        <form action="/register" method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input autocomplete="off"
+                       autofocus
+                       class="form-control"
+                       maxlength="255"
+                       minlength="3"
+                       name="username"
+                       placeholder="Username"
+                       required
+                       type="text">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input class="form-control"
+                       name="password"
+                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_=+-]).{8,20}$"
+                       placeholder="Password"
+                       required
+                       type="password">
+            </div>
+            <div class="form-group">
+                <label for="password-confirmation">Repeat your password</label>
+                <input class="form-control"
+                       name="password-confirmation"
+                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_=+-]).{8,20}$"
+                       placeholder="Password"
+                       required
+                       type="password">
+            </div>
+            <button class="btn btn-primary" type="submit">
+                Submit
+            </button>
+        </form>
+    </div>
+
+    <div class="col-sm"></div>
+</div>
+
 {% endblock %}
