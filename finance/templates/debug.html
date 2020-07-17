@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+
+{% for key, value in debug.items() %}
+    <code>{{ key }}: {{ value }}</code><br>
+{% endfor %}
+
+{% endblock %}
