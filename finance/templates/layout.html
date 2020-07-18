@@ -33,17 +33,17 @@
             </button>
             <div class="collapse navbar-collapse" id="navbar">
                 {% if session.user_id %}
-                    <ul class="navbar-nav mr-auto mt-2">
+                    <ul class="navbar-nav mr-auto">
                         <li class="nav-item"><a class="nav-link" href="/quote">Quote</a></li>
                         <li class="nav-item"><a class="nav-link" href="/buy">Buy</a></li>
                         <li class="nav-item"><a class="nav-link" href="/sell">Sell</a></li>
                         <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
                     </ul>
-                    <ul class="navbar-nav ml-auto mt-2">
+                    <ul class="navbar-nav ml-auto">
                         <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
                     </ul>
                 {% else %}
-                    <ul class="navbar-nav ml-auto mt-2">
+                    <ul class="navbar-nav ml-auto">
                         <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
                         <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
                     </ul>
@@ -63,8 +63,11 @@
             {% block main %}{% endblock %}
         </main>
 
-        <footer class="small text-center text-muted">
-            Data provided for free by <a href="https://iextrading.com/developer">IEX</a>. View <a href="https://iextrading.com/api-exhibit-a/">IEX’s Terms of Use</a>.
+        <footer class="text-center text-muted border d-flex align-items-center justify-content-center">
+            <small>
+                Data provided for free by <a href="https://iextrading.com/developer">IEX</a>.
+                View <a href="https://iextrading.com/api-exhibit-a/">IEX’s Terms of Use</a>.
+            </small>
         </footer>
 
     </body>

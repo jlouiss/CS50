@@ -1,19 +1,30 @@
 :root {
     --monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    --footer-height: 4.4rem;
 }
 
 .text-mono {
     font-family: var(--monospace);
 }
 
-nav .navbar-brand
-{
-    /* size for brand */
-    font-size: xx-large;
+html {
+    min-height: 100vh;
+    position: relative;
+}
+
+body {
+    margin-bottom: var(--footer-height);
 }
 
 main img
 {
     /* constrain images on small screens */
     max-width: 100%;
+}
+
+footer {
+    bottom: 0;
+    height: var(--footer-height);
+    position: absolute;
+    width: 100%;
 }
