@@ -1,32 +1,15 @@
 :root {
-    --blue: #537fbe;
-    --red: #ea433b;
-    --yellow: #f5b82e;
-    --green; #2e944b;
+    --monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
+
+.text-mono {
+    font-family: var(--monospace);
 }
 
 nav .navbar-brand
 {
     /* size for brand */
     font-size: xx-large;
-}
-
-/* colors for brand */
-nav .navbar-brand .blue
-{
-    color: var(--blue);
-}
-nav .navbar-brand .red
-{
-    color: var(--red);
-}
-nav .navbar-brand .yellow
-{
-    color: var(--yellow);
-}
-nav .navbar-brand .green
-{
-    color: var(--green);
 }
 
 main img
