@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col text-center">
+        <p class="lead">
+            A share of {{ quote.name }} [<code>{{ quote.symbol }}</code>]
+            costs {{ quote.price }}
+        </p>
+    </div>
+</div>
+
+{% endblock %}

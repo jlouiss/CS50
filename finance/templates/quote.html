@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col-sm"></div>
+
+    <div class="col-sm">
+        <form action="/quote" method="post">
+            <div class="form-group">
+                <label for="symbol">Stock</label>
+                <input autocomplete="off"
+                       autofocus
+                       class="form-control"
+                       name="symbol"
+                       placeholder="Stock symbol"
+                       required
+                       type="text">
+            </div>
+            <button class="btn btn-primary" type="submit">
+                Quote
+            </button>
+        </form>
+    </div>
+
+    <div class="col-sm"></div>
+</div>
+
+{% endblock %}
