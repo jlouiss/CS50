@@ -45,12 +45,35 @@ if not os.environ.get("API_KEY"):
 @app.route("/")
 @login_required
 def index():
-    # table summarizing
-    # * stocks owned
-    #   * number of shares
-    #   * current price
-    # * total value
-    return apology("TODO")
+    stocks = []
+    total = 0
+
+    stocks_rows = db.execute(
+        "SELECT * FROM 'stocks' WHERE user_id = ?", session["user_id"])
+    if len(stocks_rows) > 0:
+        for stock in stocks_rows:
+            symbol = stock["symbol"]
+            shares = stock["shares"]
+            quote = lookup(symbol)
+            name = quote["name"] if quote else '-'
+            price = quote["price"] if quote else '-'
+            stock_total = quote["price"] * stock["shares"] if quote else '-'
+            stocks.append({'symbol': symbol, 'name': name,
+                           'shares': shares, 'price': usd(price), 'total': usd(stock_total)})
+            total += stock_total
+
+    # get user cash
+    user_rows = db.execute(
+        "SELECT * FROM 'users' WHERE id = ?", session["user_id"])
+    if len(user_rows) != 1:
+        return apology("Something broke :(", 500)
+
+    cash = user_rows[0]["cash"]
+    stocks.append({'symbol': 'CASH', 'name': '-', 'shares': '-',
+                   'price': '-', 'total': usd(cash)})
+    total += cash
+
+    return render_template("index.html", stocks=stocks, total=usd(total))
 
 
 @app.route("/buy", methods=["GET", "POST"])
