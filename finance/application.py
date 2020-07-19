@@ -45,15 +45,70 @@ if not os.environ.get("API_KEY"):
 @app.route("/")
 @login_required
 def index():
-    """Show portfolio of stocks"""
+    # table summarizing
+    # * stocks owned
+    #   * number of shares
+    #   * current price
+    # * total value
     return apology("TODO")
 
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
 def buy():
-    """Buy shares of stock"""
-    return apology("TODO")
+    if request.method == "GET":
+        return render_template("buy.html")
+
+    # both shares and symbol are set as required in the template - can't be empty
+    shares = int(request.form.get("shares"))
+    if shares <= 0:
+        return apology("Invalid number of shares", 422)
+
+    quote = lookup(request.form.get("symbol"))
+    if not quote:
+        return apology("This stock doesn't exist", 500)
+
+    # calculate if user can purchase
+    rows = db.execute("SELECT cash FROM users WHERE id = :id",
+                      id=session["user_id"])
+    if len(rows) != 1:
+        return apology("Error while process the request", 500)
+
+    available_cash = rows[0]["cash"]
+    total_price = quote["price"] * shares
+    if available_cash == 0 or total_price > available_cash:
+        return apology("You don't have enough money.")
+
+    # store the transaction
+    purchase_result = db.execute("INSERT INTO 'purchases' (value, date, symbol, shares, user_id) VALUES (:value, datetime('now'), :symbol, :shares, :user_id)",
+                                 value=total_price * -1, symbol=quote["symbol"], shares=shares, user_id=session["user_id"])
+    if not purchase_result:
+        return apology("Something broke :(", 500)
+
+    # update user cash
+    new_balance = round(available_cash - total_price, 2)
+    cash_update_result = db.execute(
+        "UPDATE 'users' SET cash = :cash WHERE id = :id", cash=new_balance, id=session["user_id"])
+    if not cash_update_result:
+        return apology("Something broke :(", 500)
+
+    # update user stocks
+    user_stocks = db.execute(
+        "SELECT * FROM 'stocks' WHERE user_id = :user_id AND symbol = :symbol", user_id=session["user_id"], symbol=quote["symbol"])
+    if len(user_stocks) == 1:
+        new_shares = user_stocks[0]["shares"] + shares
+        update_result = db.execute(
+            "UPDATE 'stocks' SET shares = :shares WHERE user_id = :user_id", shares=new_shares, user_id=session["user_id"])
+        if not update_result:
+            return apology("Something broke :(", 500)
+    else:
+        insertion_result = db.execute("INSERT INTO 'stocks' (symbol, shares, user_id) VALUES (:symbol, :shares, :user_id)",
+                                      symbol=quote["symbol"], shares=shares, user_id=session["user_id"])
+        if not insertion_result:
+            return apology("Something broke :(", 500)
+
+    flash("Transaction completed")
+    return redirect("/")
 
 
 @app.route("/history")
