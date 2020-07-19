@@ -49,7 +49,7 @@ def index():
     total = 0
 
     stocks_rows = db.execute(
-        "SELECT * FROM 'stocks' WHERE user_id = ?", session["user_id"])
+        "SELECT * FROM 'stocks' WHERE user_id = :user_id", user_id=session["user_id"])
     if len(stocks_rows) > 0:
         for stock in stocks_rows:
             symbol = stock["symbol"]
@@ -64,7 +64,7 @@ def index():
 
     # get user cash
     user_rows = db.execute(
-        "SELECT * FROM 'users' WHERE id = ?", session["user_id"])
+        "SELECT * FROM 'users' WHERE id = :user_id", user_id=session["user_id"])
     if len(user_rows) != 1:
         return apology("Something broke :(", 500)
 
@@ -103,7 +103,7 @@ def buy():
         return apology("You don't have enough money.")
 
     # store the transaction
-    purchase_result = db.execute("INSERT INTO 'purchases' (value, date, symbol, shares, user_id) VALUES (:value, datetime('now'), :symbol, :shares, :user_id)",
+    purchase_result = db.execute("INSERT INTO 'transactions' (value, date, symbol, shares, user_id) VALUES (:value, datetime('now'), :symbol, :shares, :user_id)",
                                  value=total_price * -1, symbol=quote["symbol"], shares=shares, user_id=session["user_id"])
     if not purchase_result:
         return apology("Something broke :(", 500)
@@ -121,7 +121,7 @@ def buy():
     if len(user_stocks) == 1:
         new_shares = user_stocks[0]["shares"] + shares
         update_result = db.execute(
-            "UPDATE 'stocks' SET shares = :shares WHERE user_id = :user_id", shares=new_shares, user_id=session["user_id"])
+            "UPDATE 'stocks' SET shares = :shares WHERE user_id = :user_id AND symbol = :symbol", shares=new_shares, user_id=session["user_id"], symbol=quote["symbol"])
         if not update_result:
             return apology("Something broke :(", 500)
     else:
