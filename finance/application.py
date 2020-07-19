@@ -234,8 +234,62 @@ def register():
 @app.route("/sell", methods=["GET", "POST"])
 @login_required
 def sell():
-    """Sell shares of stock"""
-    return apology("TODO")
+    user_stocks = db.execute(
+        "SELECT symbol, shares FROM 'stocks' WHERE user_id = :user_id", user_id=session["user_id"])
+
+    if len(user_stocks) == 0:
+        return apology("You don't have stocks", 500)
+
+    if request.method == "GET":
+        stock_symbols = [stock["symbol"]
+                         for stock in user_stocks] if len(user_stocks) > 0 else []
+        return render_template("sell.html", stock_symbols=stock_symbols)
+
+    symbol = request.form.get("symbol")
+    shares = int(request.form.get("shares"))
+    available_shares = list(
+        filter(lambda stock: stock["symbol"] == symbol, user_stocks))[0]["shares"]
+
+    if shares > available_shares:
+        return apology("You can't sell more shares than you have")
+
+    quote = lookup(symbol)
+    updated_shares = available_shares - shares
+    total_value = shares * quote["price"]
+
+    current_cash_query = db.execute("SELECT cash FROM users WHERE id = :id",
+                                    id=session["user_id"])
+    if not current_cash_query:
+        return apology("Something broke :(", 500)
+
+    # store the transaction
+    sell_result = db.execute("INSERT INTO 'transactions' (value, date, symbol, shares, user_id) VALUES (:value, datetime('now'), :symbol, :shares, :user_id)",
+                             value=total_value, symbol=quote["symbol"], shares=shares, user_id=session["user_id"])
+    if not sell_result:
+        return apology("Something broke :(", 500)
+
+    # update user cash
+    new_balance = round(current_cash_query[0]["cash"] + total_value, 2)
+    cash_update_result = db.execute(
+        "UPDATE 'users' SET cash = :cash WHERE id = :id", cash=new_balance, id=session["user_id"])
+    if not cash_update_result:
+        return apology("Something broke :(", 500)
+
+    # delete stocks row if selling all shares
+    if updated_shares == 0:
+        deletion_result = db.execute(
+            "DELETE FROM 'stocks' WHERE user_id = :user_id and symbol = :symbol", user_id=session["user_id"], symbol=symbol)
+        if not deletion_result:
+            return apology("Something broke :(", 500)
+    # update amount
+    else:
+        update_result = db.execute("UPDATE 'stocks' SET shares = :shares WHERE user_id = :user_id AND symbol = :symbol",
+                                   shares=updated_shares, user_id=session["user_id"], symbol=symbol)
+        if not update_result:
+            return apology("Something broke :(", 500)
+
+    flash("Transaction completed")
+    return redirect("/")
 
 
 def errorhandler(e):
