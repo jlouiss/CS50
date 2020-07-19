@@ -15,13 +15,15 @@ app = Flask(__name__)
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-# Ensure responses aren't cached
+
 @app.after_request
 def after_request(response):
+    # Ensure responses aren't cached
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
+
 
 # Custom filter
 app.jinja_env.filters["usd"] = usd
@@ -143,7 +145,8 @@ def register():
     if len(rows) != 0:
         return apology("invalid username", 403)
 
-    result = db.execute("INSERT INTO users (username, hash) VALUES (:username, :password)", username=username, password=generate_password_hash(password))
+    result = db.execute("INSERT INTO users (username, hash) VALUES (:username, :password)",
+                        username=username, password=generate_password_hash(password))
     if not result:
         return apology("something went wrong, try again", 500)
 
